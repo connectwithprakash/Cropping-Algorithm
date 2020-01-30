@@ -35,18 +35,15 @@ def clip_image(image, center, output_dim, shift_value):
             x2_ = x2+dx//2
             y1_ = y1-dy//2
             y2_ = y2+dy//2
+        
+        elif not left or not right:
+            if right:
+                x1_ = x1
+                x2_ = x2+dx
+            if left:
+                x1_ = x1-dx
+                x2_ = x2
             
-            left, right, up, down = check_constraints(
-                (left, right, up, down),
-                (x, y),
-                (x1_, x2_, y1_, y2_)
-            )
-
-        elif not left and right:
-#             print('left end')
-            x1_ = x1
-            x2_ = x2+dx
-#             print(f'up: {up}')
             if not up:
 #                 print('left up end')
                 y1_ = y1
@@ -60,32 +57,6 @@ def clip_image(image, center, output_dim, shift_value):
 #                 print('left end all open')
                 y1_ = y1-dy//2
                 y2_ = y2+dy//2
-                
-            left, right, up, down = check_constraints(
-                (left, right, up, down),
-                (x, y),
-                (x1_, x2_, y1_, y2_)
-            )
-                
-        elif not right and left:
-#             print('right end')
-            x1_ = x1-dx
-            x2_ = x2
-            if not up:
-                y1_ = y1
-                y2_ = y2+dy
-            elif not down:
-                y1_ = y1-dy
-                y2_ = y2
-            else:
-                y1_ = y1-dy//2
-                y2_ = y2+dy//2
-                
-            left, right, up, down = check_constraints(
-                (left, right, up, down),
-                (x, y),
-                (x1_, x2_, y1_, y2_)
-            )
         
         elif not up and down and left and right:
 #             print('up end')
@@ -93,12 +64,6 @@ def clip_image(image, center, output_dim, shift_value):
             x2_ = x2+dx//2
             y1_ = y1
             y2_ = y2+dy
-            
-            left, right, up, down = check_constraints(
-                (left, right, up, down),
-                (x, y),
-                (x1_, x2_, y1_, y2_)
-            )
                 
         elif not down and up and left and right:
 #             print('down end')
@@ -107,7 +72,8 @@ def clip_image(image, center, output_dim, shift_value):
             y1_ = y1-dy
             y2_ = y2
             
-            left, right, up, down = check_constraints(
+            
+        left, right, up, down = check_constraints(
                 (left, right, up, down),
                 (x, y),
                 (x1_, x2_, y1_, y2_)
