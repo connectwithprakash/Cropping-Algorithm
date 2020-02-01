@@ -10,14 +10,12 @@ def check_constraints(constraints, image_dim, window_axes):
 
     return (move_left, move_right, move_up, move_down)
 
-def clip_image(image, center, output_dim, shift_value):
+def crop(image, center, aspect_ratio, expansion_value=5):
     h, k = center # center coordinates of face
     y, x = image.shape[:-1] # dimension of image
-    a, b = output_dim # dimesion of required output image
-    ratio = a/float(b) # aspect ratio to maintain
 
-    dx = int(shift_value) # expansion of window size from x-axis
-    dy = int(dx/ratio) # expansion of window size from y-axis maintaining aspect ratio
+    dx = int(expansion_value) # expansion of window size from x-axis in pixel
+    dy = int(dx/aspect_ratio) # expansion of window size from y-axis maintaining aspect aspect_ratio
 
     x1, x2, y1, y2 = h, h, k, k # placing center of expansion at center of image and moving outward
 
@@ -81,6 +79,5 @@ def clip_image(image, center, output_dim, shift_value):
             x1, x2, y1, y2 = x1_, x2_, y1_, y2_
 
     cropped_image = image[y1:y2, x1:x2, :] # cropping the window sized image
-    resized_image = cv2.resize(cropped_image, output_dim, interpolation=cv2.INTER_AREA) # resizing image to required uotput dim
 
-    return resized_image
+    return cropped_image
