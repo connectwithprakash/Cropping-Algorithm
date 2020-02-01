@@ -1,101 +1,86 @@
 def check_constraints(constraints, image_dim, window_axes):
-    left, right, up, down = constraints
+    # checks the movement of axes possible or not
+    move_left, move_right, move_up, move_down = constraints
     x, y = image_dim
     x1, x2, y1, y2 = window_axes
-    if x1<=0: left = False
-    if x2>=x: right = False
-    if y1<=0: up = False
-    if y2>=y: down = False
-        
-    return (left, right, up, down)
+    if x1<=0: move_left = False
+    if x2>=x: move_right = False
+    if y1<=0: move_up = False
+    if y2>=y: move_down = False
 
+    return (move_left, move_right, move_up, move_down)
 
 def clip_image(image, center, output_dim, shift_value):
-# x-axis adjustment
-    h, k = center
-    y, x = image.shape[:-1]
-    a, b = output_dim
-    ratio = a/float(b)
-#     print(ratio)
-    dx = int(shift_value)
-    dy = int(dx/ratio)
-#     print(dx, dy)
-    x1, x2, y1, y2 = h, h, k, k
+    h, k = center # center coordinates of face
+    y, x = image.shape[:-1] # dimension of image
+    a, b = output_dim # dimesion of required output image
+    ratio = a/float(b) # aspect ratio to maintain
 
-    left, right, up, down = True, True, True, True
-    
+    dx = int(shift_value) # expansion of window size from x-axis
+    dy = int(dx/ratio) # expansion of window size from y-axis maintaining aspect ratio
+
+    x1, x2, y1, y2 = h, h, k, k # placing center of expansion at center of image and moving outward
+
+    move_left, move_right, move_up, move_down = True, True, True, True # 
+
     while True:
-#         dx += int(shift_value)
-#         dy = int(dx/ratio)
-#         print(h, dx, k, dy)
-        
-        if left and right and up and down:
-#             print('center')
+        # expands window from every sides
+        if move_left and move_right and move_up and move_down:
             x1_ = x1-dx//2
             x2_ = x2+dx//2
             y1_ = y1-dy//2
             y2_ = y2+dy//2
-        
-        elif not left or not right:
-            if right:
+
+        # expands windw from every sides except left or right
+        elif not move_left or not move_right:
+            if move_right:
                 x1_ = x1
                 x2_ = x2+dx
-            if left:
+
+            if move_left:
                 x1_ = x1-dx
                 x2_ = x2
-            
-            if not up:
-#                 print('left up end')
+
+            if not move_up:
                 y1_ = y1
                 y2_ = y2+dy
-#                 print(f'y2_ {y2_}')
-            elif not down:
-#                 print('left down end')
+
+            elif not move_down:
                 y1_ = y1-dy
                 y2_ = y2
             else:
-#                 print('left end all open')
                 y1_ = y1-dy//2
                 y2_ = y2+dy//2
-        
-        elif not up and down and left and right:
-#             print('up end')
+
+        # expands windw from every sides except up or down
+        elif (not move_up or not move_down) and move_left and move_right:
             x1_ = x1-dx//2
             x2_ = x2+dx//2
-            y1_ = y1
-            y2_ = y2+dy
-                
-        elif not down and up and left and right:
-#             print('down end')
-            x1_ = x1-dx//2
-            x2_ = x2+dx//2
-            y1_ = y1-dy
-            y2_ = y2
-            
-            
-        left, right, up, down = check_constraints(
-                (left, right, up, down),
+            if not move_up:
+                y1_ = y1
+                y2_ = y2+dy
+            elif not move_down:
+                y1_ = y1-dy
+                y2_ = y2
+
+        # checking the constraints after expansion
+        move_left, move_right, move_up, move_down = check_constraints(
+                (move_left, move_right, move_up, move_down),
                 (x, y),
                 (x1_, x2_, y1_, y2_)
             )
-#         print('********************************************************')
-#         print(left, right, up, down)
-                
-        if (not left and not right and not up and down) or (left and not right and not up and not down) or\
-        (not left and not right and up and not down) or (not left and not right and not up and down) or\
-        (not left and not right) or (not up and not down):
-#             print('break')
+
+        # checking the terminating conditions
+        if (not move_left and not move_right and not move_up and move_down) or (move_left and not move_right and not move_up and not move_down) or\
+        (not move_left and not move_right and move_up and not move_down) or (not move_left and not move_right and not move_up and move_down) or\
+        (not move_left and not move_right) or (not move_up and not move_down):
             break
+
+        # checking the valid expansion and taking valid window
         if x1_>=0 and x2_<=x and y1_>=0 and y2_<=y:
             x1, x2, y1, y2 = x1_, x2_, y1_, y2_
-        
-#         print(x1_, x2_, y1_, y2_)
-#         print(x1, x2, y1, y2)
-#         print(x2-x1, y2-y1)
-            
-            
-#     print(image.shape)
-#     print(image[y1:y2, x1:x2, :].shape)
-    cropped_image = image[y1:y2, x1:x2, :]
-    resized_image = cv2.resize(cropped_image, output_dim, interpolation=cv2.INTER_AREA)
+
+    cropped_image = image[y1:y2, x1:x2, :] # cropping the window sized image
+    resized_image = cv2.resize(cropped_image, output_dim, interpolation=cv2.INTER_AREA) # resizing image to required uotput dim
+
     return resized_image
