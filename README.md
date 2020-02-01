@@ -1,4 +1,4 @@
-<h2>The algorithm accepts image and then with the given center co-ordinates and aspects ratio finds the image segment and crops the image.</h2>
+<h3>The algorithm accepts image and then with the given center co-ordinates and aspects ratio finds the image segment and crops the image.</h3>
 
 **Contents**
 
