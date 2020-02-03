@@ -1,4 +1,21 @@
 def check_constraints(constraints, image_dim, window_axes):
+    """Checks different window expansion constraints such as
+    is it possible to expand from left or not and other too
+
+    Parameters
+    ----------
+    constraints : tuple
+        left, right, up, down window expansion constraints
+    image_dim : tuple
+        input image dimension (x, y) or (width, height)
+    window_axes : tuple
+        window axes (x1, x2, y1, y2) to check constraints
+
+    Returns
+    -------
+    tuple
+        Boolean values for constraints
+    """
     # checks the movement of axes possible or not
     move_left, move_right, move_up, move_down = constraints
     x, y = image_dim
@@ -24,6 +41,24 @@ def check_constraints(constraints, image_dim, window_axes):
 #   ********************
 
 def crop(image, center, aspect_ratio, expansion_value=5):
+    """This function takes the image and crops it with desired aspect ratio
+
+    Parameters
+    ----------
+    image : numpy array
+        image array
+    center : tuple
+        h, k for center of window expansion
+    aspect_ratio : float
+        aspect ratio for window
+    expansion_value : int, optional
+        rate of window expansion, by default 5
+
+    Returns
+    -------
+    numpy array
+        cropped image array
+    """
     h, k = center # center coordinates of face
     y, x = image.shape[:-1] # dimension of image
 
@@ -32,7 +67,7 @@ def crop(image, center, aspect_ratio, expansion_value=5):
 
     x1, x2, y1, y2 = h, h, k, k # placing center of expansion at center of image and moving outward
 
-    move_left, move_right, move_up, move_down = True, True, True, True # 
+    move_left, move_right, move_up, move_down = True, True, True, True #
 
     while True:
         # expands window from every sides
@@ -85,7 +120,7 @@ def crop(image, center, aspect_ratio, expansion_value=5):
         if (move_left is False and move_right is False and move_up is False and move_down is True) or \
             (move_left is True and move_right is False and move_up is False and move_down is False) or \
                 (move_left is False and move_right is False and move_up is True and move_down is False) or \
-                    (move_left is False and move_right is False and move_up is False and move_down is True) or\
+                    (move_left is False and move_right is True and move_up is False and move_down is False) or\
                         (move_left is False and move_right is False) or (move_up is False and move_down is False):
                         break
 
