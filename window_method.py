@@ -71,27 +71,27 @@ def crop(image, center, aspect_ratio, expansion_value=5):
 
     while True:
         # expands window from every sides
-        if move_left is True and move_right is True and move_up is True and move_down is True:
+        if not move_left and move_right and move_up and move_down:
             x1_ = x1-dx//2
             x2_ = x2+dx//2
             y1_ = y1-dy//2
             y2_ = y2+dy//2
 
         # expands windw from every sides except left or right
-        elif move_left is False or move_right is False:
-            if move_right is True:
+        elif not move_left or not move_right:
+            if move_right:
                 x1_ = x1
                 x2_ = x2+dx
 
-            if move_left is True:
+            if move_left:
                 x1_ = x1-dx
                 x2_ = x2
 
-            if move_up is False:
+            if not move_up:
                 y1_ = y1
                 y2_ = y2+dy
 
-            elif move_down is False:
+            elif not move_down:
                 y1_ = y1-dy
                 y2_ = y2
             else:
@@ -99,13 +99,13 @@ def crop(image, center, aspect_ratio, expansion_value=5):
                 y2_ = y2+dy//2
 
         # expands windw from every sides except up or down
-        elif (move_up is False or move_down is False) and move_left is True and move_right is True:
+        elif (not move_up or not move_down) and move_left and move_right:
             x1_ = x1-dx//2
             x2_ = x2+dx//2
-            if move_up is False:
+            if not move_up:
                 y1_ = y1
                 y2_ = y2+dy
-            elif move_down is False:
+            elif not move_down:
                 y1_ = y1-dy
                 y2_ = y2
 
@@ -117,12 +117,8 @@ def crop(image, center, aspect_ratio, expansion_value=5):
             )
 
         # checking the terminating conditions
-        if (move_left is False and move_right is False and move_up is False and move_down is True) or \
-            (move_left is True and move_right is False and move_up is False and move_down is False) or \
-                (move_left is False and move_right is False and move_up is True and move_down is False) or \
-                    (move_left is False and move_right is True and move_up is False and move_down is False) or\
-                        (move_left is False and move_right is False) or (move_up is False and move_down is False):
-                        break
+        if (not move_left and not move_right) or (not move_up and not move_down):
+            break
 
         # checking the valid expansion and taking valid window
         if x1_>=0 and x2_<=x and y1_>=0 and y2_<=y:
