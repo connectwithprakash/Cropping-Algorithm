@@ -10,6 +10,19 @@ def check_constraints(constraints, image_dim, window_axes):
 
     return (move_left, move_right, move_up, move_down)
 
+#   ********************
+#   *           ^    ^ *
+#   *           y1   | *
+#   *           |    | *
+#   *        *****   | *
+#   *        *   *  y2 *
+#   *<--x1-->*   *   | *
+#   *        *****   - *
+#   *<---------x2----->*
+#   *                  *
+#   *                  *
+#   ********************
+
 def crop(image, center, aspect_ratio, expansion_value=5):
     h, k = center # center coordinates of face
     y, x = image.shape[:-1] # dimension of image
