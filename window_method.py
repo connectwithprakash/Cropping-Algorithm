@@ -66,12 +66,13 @@ def crop(image, center, aspect_ratio, expansion_value=5):
     dy = int(dx/aspect_ratio) # expansion of window size from y-axis maintaining aspect aspect_ratio
 
     x1, x2, y1, y2 = h, h, k, k # placing center of expansion at center of image and moving outward
+    x1_, x2_, y1_, y2_ = h, h, k, k
 
     move_left, move_right, move_up, move_down = True, True, True, True #
 
     while True:
         # expands window from every sides
-        if not move_left and move_right and move_up and move_down:
+        if move_left and move_right and move_up and move_down:
             x1_ = x1-dx//2
             x2_ = x2+dx//2
             y1_ = y1-dy//2
